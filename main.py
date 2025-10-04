@@ -6,7 +6,7 @@ from app.chat_utils import get_chat_model, ask_chat_model
 from app.config import EURI_API_KEY
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import time
-
+from app.vectorestore_utils import create_or_load_faiss_index
 
 st.set_page_config(
     page_title="MediChat - Medical Document Assistant",
