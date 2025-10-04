@@ -2,6 +2,8 @@
 import streamlit as st
 import os
 import sys
+import pickle
+import tempfile
 
 # Add better error handling for sentence-transformers
 try:
@@ -21,7 +23,36 @@ except ImportError:
         from langchain.embeddings import HuggingFaceEmbeddings
     except ImportError:
         st.error("Required LangChain packages not installed.")
+#---------------------------------------------------------------------------------------
 
+def save_vector_store_to_session(vector_store, session_key="vector_store"):
+    """Save FAISS to session_state (pickles the object)."""
+    if not hasattr(st, 'session_state'):
+        return  # Fallback if not in Streamlit
+    st.session_state[session_key] = vector_store
+
+def load_vector_store_from_session(session_key="vector_store"):
+    """Load FAISS from session_state."""
+    if not hasattr(st, 'session_state'):
+        return None
+    return st.session_state.get(session_key)
+
+def create_or_load_faiss_index(texts, session_key="vector_store"):
+    """Create if not exists, else load from session."""
+    existing_store = load_vector_store_from_session(session_key)
+    if existing_store:
+        st.info("Loaded existing vector index from session.")
+        return existing_store
+    
+    # Create new one
+    new_store = create_faiss_index(texts)
+    if new_store:
+        save_vector_store_to_session(new_store, session_key)
+        st.success("Created and cached new vector index.")
+    return new_store
+
+
+#---------------------------------------------------------------------------------------
 def create_faiss_index(texts):
     """Create FAISS vector store from texts"""
     try:
