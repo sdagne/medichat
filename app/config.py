@@ -1,0 +1,1 @@
+EURI_API_KEY="euri-d944eaad3b44e3b7d1749df3e8018b7a180f54f2a8bd0eac3984c91ba88f413b"
