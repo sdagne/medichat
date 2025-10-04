@@ -6,7 +6,6 @@ from app.chat_utils import get_chat_model, ask_chat_model
 from app.config import EURI_API_KEY
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import time
-from app.vectorestore_utils import create_or_load_faiss_index
 
 st.set_page_config(
     page_title="MediChat - Medical Document Assistant",
@@ -138,68 +137,7 @@ with st.sidebar:
 # Main chat interface
 st.markdown("### 💬 You can ask your Ai Assistant")
 #------------------------------------------------------------------------------------
-st.title("MediChat")
 
-# Initialize session state for PDFs and index
-if "uploaded_pdfs" not in st.session_state:
-    st.session_state.uploaded_pdfs = []
-if "all_texts" not in st.session_state:
-    st.session_state.all_texts = []
-if "vector_store" not in st.session_state:
-    st.session_state.vector_store = None
-if "api_key" not in st.session_state:
-    st.session_state.api_key = st.secrets.get("OPENAI_API_KEY", "")  # Or sidebar input
-
-# API Key setup (use st.secrets on Cloud for security)
-if not st.session_state.api_key:
-    st.session_state.api_key = st.sidebar.text_input("Enter API Key", type="password")
-
-chat_model = get_chat_model(st.session_state.api_key)
-
-# PDF Upload (only show if no index)
-if not st.session_state.vector_store:
-    uploaded_files = pdf_uploader()
-    if uploaded_files:
-        st.session_state.uploaded_pdfs = uploaded_files
-        all_texts = []
-        for file in uploaded_files:
-            text = extract_text_from_pdf(file)
-            # Chunk text if needed (add simple chunking, e.g., split by paragraphs)
-            chunks = [text[i:i+1000] for i in range(0, len(text), 1000)]  # Basic example
-            all_texts.extend(chunks)
-        st.session_state.all_texts = all_texts
-        
-        # Create/load index
-        st.session_state.vector_store = create_or_load_faiss_index(all_texts)
-        st.rerun()  # Refresh to hide uploader
-else:
-    st.info(f"📄 Loaded {len(st.session_state.all_texts)} text chunks from {len(st.session_state.uploaded_pdfs)} PDFs.")
-
-# Clear session button (for testing)
-if st.button("Clear Documents"):
-    for key in ["uploaded_pdfs", "all_texts", "vector_store"]:
-        del st.session_state[key]
-    st.rerun()
-
-# Chat Interface
-if st.session_state.vector_store:
-    query = st.chat_input("Ask a question about the documents...")
-    if query:
-        # Retrieve
-        docs = retrive_relevant_docs(st.session_state.vector_store, query, k=3)
-        context = "\n\n".join([doc.page_content if hasattr(doc, 'page_content') else str(doc) for doc in docs])
-        
-        # Prompt for RAG
-        prompt = f"Based on this medical context:\n{context}\n\nUser question: {query}\nAnswer helpfully and cite sources."
-        
-        # Generate
-        with st.chat_message("user"):
-            st.write(query)
-        with st.chat_message("assistant"):
-            response = ask_chat_model(chat_model, prompt)
-            st.write(response)
-else:
-    st.warning("Please upload PDFs to start chatting.")
 
 #--------------------------------------------------------------------------------------
 
