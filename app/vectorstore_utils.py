@@ -70,11 +70,11 @@ def create_faiss_index_fallback(texts):
         st.error(f"Fallback also failed: {e}")
         return None
 
-def retrieve_relevant_docs(vector_store, query, k=3):
+def retrive_relevant_docs(vector_store, query, k=3):
     """Retrieve relevant documents from FAISS index"""
     try:
         if isinstance(vector_store, dict):  # Fallback vectorstore
-            return retrieve_from_fallback(vector_store, query, k)
+            return retrive_from_fallback(vector_store, query, k)
         else:  # Standard LangChain vectorstore
             docs = vector_store.similarity_search(query, k=k)
             return docs
@@ -82,7 +82,7 @@ def retrieve_relevant_docs(vector_store, query, k=3):
         st.error(f"Error retrieving documents: {e}")
         return []
 
-def retrieve_from_fallback(vector_store, query, k=3):
+def retrive_from_fallback(vector_store, query, k=3):
     """Retrieve from fallback FAISS index"""
     try:
         query_embedding = vector_store['model'].encode([query], normalize_embeddings=True)
