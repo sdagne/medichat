@@ -9,7 +9,7 @@ import time
 
 
 st.set_page_config(
-    page_title="MediChat Pro - Medical Document Assistant",
+    page_title="MediChat - Medical Document Assistant",
     page_icon="🏥",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -17,6 +17,10 @@ st.set_page_config(
 
 st.markdown("""
 <style>
+/* Page background */
+    .reportview-container, .main, .block-container {
+        background-color: #d0e7ff;  /* light blue */
+    }
     .chat-message {
         padding: 1rem;
         border-radius: 0.5rem;
@@ -83,8 +87,8 @@ if "chat_model" not in st.session_state:
 ##ff4b4b red color
 st.markdown("""
 <div style="text-align: center; padding: 2rem 0;">
-    <h1 style="color: #0000FF; font-size: 3rem; margin-bottom: 0.5rem;">🏥 MediChat</h1>
-    <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem;">Your Intelligent Medical Document Assistant</p>
+    <h2 style="color: #0000FF; font-size: 3rem; margin-bottom: 0.5rem;">🏥 MediChat</h2>
+    <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem;">This is your Intelligent Medical Document Assistant</p>
 
 </div>
 """, unsafe_allow_html=True)
@@ -93,7 +97,7 @@ st.markdown("""
 # Sidebar for document upload
 with st.sidebar:
     st.markdown("### 📁 Document Upload")
-    st.markdown("Upload your medical documents to start chatting!")
+    st.markdown("Upload your documents to start chatting!")
     
     uploaded_files = pdf_uploader()
     
@@ -132,7 +136,7 @@ with st.sidebar:
                 st.balloons()
 
 # Main chat interface
-st.markdown("### 💬 Chat with Your Ai Assistant")
+st.markdown("### 💬 You can ask your Ai Assistant")
 
 
 # Display chat messages
@@ -200,7 +204,8 @@ if prompt := st.chat_input("Ask about your medical documents..."):
 st.markdown("---")
 st.markdown("""
 
-<div style="text-align: center; color: #666; font-size: 0.9rem;">🤖 Powered by Euri AI & LangChain | 💡 Developed by <span style="color: #0000FF;">Shewan Dagne</span> in RAG Learning Model</div>
+<div style="text-align: center; color: #666; font-size: 0.9rem;">🤖 Powered by Euri-AI & LangChain | 💡 This is a RAG model developed by <span style="color: #0000FF;">Shewan Dagne</span> with guidance from Instructor Sudhanshu Kumar at the Euron Learning Portal.
+</div>
 
 """, unsafe_allow_html=True)    
 
